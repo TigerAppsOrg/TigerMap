@@ -5,7 +5,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import EmojiPicker from "emoji-picker-react";
-import { URL_PREFIX } from "../config";
 
 function Form() {
   const [courses, setCourses] = useState([]);
@@ -22,7 +21,7 @@ function Form() {
     };
 
     if (data.title !== "" && data.courses !== "[]" && courses.length >= 3) {
-      axios.post(`${URL_PREFIX}/createtrack`, data).then((response) => {
+      axios.post(`/createtrack`, data).then((response) => {
         navigate("/track/" + response.data.id);
       }).catch(() => navigate("/error"));
     } else if (data.title === "") {

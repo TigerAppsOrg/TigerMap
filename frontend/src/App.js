@@ -23,7 +23,7 @@ function App() {
           <Route path="/:id" element={<Main />} />
           <Route path="/error" element={<Error />} />
           <Route path="/" element={<Main />} />
-          <Route path="/notfound" element={<NotFound />}/>
+          <Route path="/notfound" element={<NotFound />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

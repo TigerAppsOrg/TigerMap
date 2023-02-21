@@ -10,7 +10,7 @@ import CurrentCourse from "./CurrentCourse";
 import Select from "react-select";
 import logo from "../images/logo.png";
 import { useNavigate, useLocation } from "react-router-dom";
-import { DEFAULT_SEARCH, URL_PREFIX } from "../config";
+import { DEFAULT_SEARCH } from "../config";
 
 function Main() {
   const params = useParams();
@@ -28,7 +28,7 @@ function Main() {
   useEffect(() => {
     if (query) {
       axios
-        .get(`${URL_PREFIX}/search`, { params: { query: query } })
+        .get(`/search`, { params: { query: query } })
         .then((response) => {
           let result = response.data;
           for (let i = 0; i < result.length; i++) {
@@ -49,7 +49,7 @@ function Main() {
     console.log("hit")
     if (courseId) {
       axios
-        .get(`${URL_PREFIX}/api`, { params: { course_id: courseId } })
+        .get(`/api`, { params: { course_id: courseId } })
         .then((response) => {
           setData(response.data);
         })

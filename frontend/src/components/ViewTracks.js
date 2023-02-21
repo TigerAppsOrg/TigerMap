@@ -5,7 +5,6 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useNavigate } from "react-router-dom";
-import { URL_PREFIX } from "../config";
 
 function ViewTracks() {
   const [tracks, setTracks] = useState([]);
@@ -25,7 +24,7 @@ function ViewTracks() {
   ];
 
   useEffect(() => {
-    axios.get(`${URL_PREFIX}/gettracks`).then((response) => {
+    axios.get(`/gettracks`).then((response) => {
       setTracks(response.data);
     }).catch(() => navigate("/error"));
   }, []);

@@ -7,7 +7,7 @@ import Select from "react-select";
 import Badge from "react-bootstrap/Badge";
 import { TrashFill } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
-import { DEFAULT_SEARCH, URL_PREFIX } from "../config";
+import { DEFAULT_SEARCH } from "../config";
 
 function Tracks(props) {
   const [response, setResponse] = useState(DEFAULT_SEARCH);
@@ -18,7 +18,7 @@ function Tracks(props) {
   useEffect(() => {
     if (query) {
       axios
-        .get(`${URL_PREFIX}/search`, { params: { query: query } })
+        .get(`/search`, { params: { query: query } })
         .then((response) => {
           let result = response.data;
           for (let i = 0; i < result.length; i++) {
@@ -44,7 +44,7 @@ function Tracks(props) {
         alert("You can only select a maximum of 10 courses.");
       } else {
         axios
-          .get(`${URL_PREFIX}/api`, { params: { course_id: courseId } })
+          .get(`/api`, { params: { course_id: courseId } })
           .then((response) => {
             props.setCourses([...props.courses, response.data]);
           }).catch(() => navigate("/error"));

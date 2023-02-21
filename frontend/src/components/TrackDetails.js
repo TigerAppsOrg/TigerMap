@@ -6,7 +6,6 @@ import Container from "react-bootstrap/esm/Container";
 import Row from "react-bootstrap/esm/Row";
 import graph from "../images/graph.png";
 import { useNavigate } from "react-router-dom";
-import { URL_PREFIX } from "../config";
 
 function TrackDetails() {
   const params = useParams();
@@ -15,7 +14,7 @@ function TrackDetails() {
 
   useEffect(() => {
     axios
-      .get(`${URL_PREFIX}/trackdetails`, { params: { id: params.id } })
+      .get(`/trackdetails`, { params: { id: params.id } })
       .then((response) => {
         setTrack(response.data);
       }).catch(() => {
@@ -26,7 +25,7 @@ function TrackDetails() {
   // useEffect(() => {
   //   if (track) {
   //     axios
-  //       .post(`${URL_PREFIX}/graph`, {
+  //       .post(`/graph`, {
   //         course_ids: track.courses.map((course) => course._id),
   //       })
   //       .then((response) => {
