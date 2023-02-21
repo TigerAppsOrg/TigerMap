@@ -105,6 +105,9 @@ function Form() {
           >
             Make Track
           </button>
+          <div class="form-text">
+            Your netID will be displayed alongside your track.
+          </div>
         </form>
       </Row>
     </Container>
