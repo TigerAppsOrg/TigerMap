@@ -28,7 +28,14 @@ function About() {
             going down different course paths and efficiently exploring the
             options available to them. These course tracks can then be saved and
             shared between users, making researching courses easier than ever
-            before.{" "}
+            before.
+          </p>
+          <p>
+            The{" "}
+            <a href="https://tigerapps.org" target="_blank">
+              TigerApps Team
+            </a>{" "}
+            actively maintains and upgrades TigerMap.
           </p>
           <br />
         </div>
