@@ -14,6 +14,7 @@ prereq_code_to_id = {} # course code => course_id
 prereq_graph = {} # course_id => [course_ids]
 
 term_course_ids = list(map(lambda term: get_course_ids(term), terms))
+clear_collection("details")
 
 for i, term in enumerate(terms):
     print(f"Started term {term}")
@@ -31,7 +32,7 @@ for i, term in enumerate(terms):
         course_details.append(course_detail)
         if len(course_details) % 25 == 0:
             print(f"> {len(course_details)} completed")
-    insert_details(course_details, "temp_details")
+    insert_details(course_details, "details")
     print(f"Inserted {len(course_details)} course details")
 
 for key, arr in id_to_prereq_codes.items():
@@ -53,6 +54,3 @@ print("Inserted prereq graph")
 postreq_graph["_id"] = "postreq"
 insert_graph(postreq_graph)
 print("Inserted postreq graph")
-
-drop_collection("details")
-rename_collection("temp_details", "details")
