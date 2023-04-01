@@ -121,7 +121,7 @@ def update_metadata(new_term, old_metadata):
     new_terms.insert(0, new_term)
     client = pymongo.MongoClient(os.getenv("DB_CONN"))
     db = client.courses
-    db.metadata.update_one({}, {"current_term": new_term, "included_terms": new_terms})
+    db.metadata.update_one({}, {"$set": {"current_term": new_term, "included_terms": new_terms}})
     return new_terms
 
 def drop_collection(collection_name):
