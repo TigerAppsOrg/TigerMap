@@ -24,7 +24,7 @@ for i, term in enumerate(terms):
         if course_detail["subject"] + course_detail["catnum"] in prereq_code_to_id \
                 or course_id in id_to_prereq_codes:
             continue
-        print(f"Processing {course_detail['subject']} + {course_detail['catnum']}")
+        print(f"Processing {course_detail['subject'] + course_detail['catnum']}")
         id_to_prereq_codes[course_id] = get_prereqs(course_detail)
         for crosslisting in get_crosslistings(course_detail):
             prereq_code_to_id[crosslisting] = course_id
