@@ -31,7 +31,7 @@ for i, term in enumerate(terms):
         course_details.append(course_detail)
         if len(course_details) % 25 == 0:
             print(f"> {len(course_details)} completed")
-    insert_details(course_details, "temp")
+    insert_details(course_details, "temp_details")
     print(f"Inserted {len(course_details)} course details")
 
 for key, arr in id_to_prereq_codes.items():
@@ -55,4 +55,4 @@ insert_graph(postreq_graph)
 print("Inserted postreq graph")
 
 drop_collection("details")
-rename_collection("temp", "details")
+rename_collection("temp_details", "details")
