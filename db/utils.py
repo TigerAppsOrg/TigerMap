@@ -132,7 +132,7 @@ def drop_collection(collection_name):
 def clear_collection(collection_name):
     client = pymongo.MongoClient(os.getenv("DB_CONN"))
     db = client.courses
-    db[collection_name].deleteMany({})
+    db[collection_name].delete_many({})
 
 def rename_collection(collection_name, new_name):
     client = pymongo.MongoClient(os.getenv("DB_CONN"))
