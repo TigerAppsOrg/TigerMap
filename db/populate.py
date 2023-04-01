@@ -22,15 +22,16 @@ for i, term in enumerate(terms):
     for course_id in course_ids:
         course_detail = get_details(term, course_id)
         if course_detail["subject"] + course_detail["catnum"] in prereq_code_to_id \
-             or course_id in id_to_prereq_codes:
+                or course_id in id_to_prereq_codes:
             continue
+        print(f"Processing {course_detail['subject']} + {course_detail['catnum']}")
         id_to_prereq_codes[course_id] = get_prereqs(course_detail)
         for crosslisting in get_crosslistings(course_detail):
             prereq_code_to_id[crosslisting] = course_id
         course_details.append(course_detail)
         if len(course_details) % 25 == 0:
-            print(f"{len(course_details)} completed")
-    insert_details(course_details, current_term)
+            print(f"> {len(course_details)} completed")
+    insert_details(course_details, "temp")
     print(f"Inserted {len(course_details)} course details")
 
 for key, arr in id_to_prereq_codes.items():
@@ -54,4 +55,4 @@ insert_graph(postreq_graph)
 print("Inserted postreq graph")
 
 drop_collection("details")
-rename_collection(current_term, "details")
+rename_collection("temp", "details")
