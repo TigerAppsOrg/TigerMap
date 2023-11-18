@@ -117,11 +117,12 @@ def get_metadata():
 
 def update_metadata(new_term, old_metadata):
     new_terms = old_metadata["included_terms"]
-    new_terms.pop()
+    # new_terms.pop()
     new_terms.insert(0, new_term)
+    new_terms = list(set(new_terms))
     client = pymongo.MongoClient(os.getenv("DB_CONN"))
     db = client.courses
-    db.metadata.update_one({}, {"$set": {"current_term": new_term, "included_terms": new_terms}})
+    db.metadata.update_one({}, {"$set": {"current_term": new_term, "included_terms": sorted(new_terms, reverse=True)}})
     return new_terms
 
 def drop_collection(collection_name):
