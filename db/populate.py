@@ -4,9 +4,9 @@ from time import sleep
 current_term = get_current_term()
 metadata = get_metadata()
 
-# if metadata["current_term"] == current_term:
-#     print("No updates needed")
-#     exit()
+if metadata["current_term"] == current_term:
+    print("No updates needed")
+    exit()
 
 terms = update_metadata(current_term, metadata)
 
