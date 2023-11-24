@@ -1,11 +1,12 @@
 from utils import *
+from time import sleep
 
 current_term = get_current_term()
 metadata = get_metadata()
 
-if metadata["current_term"] == current_term:
-    print("No updates needed")
-    exit()
+# if metadata["current_term"] == current_term:
+#     print("No updates needed")
+#     exit()
 
 terms = update_metadata(current_term, metadata)
 
@@ -21,7 +22,11 @@ for i, term in enumerate(terms):
     course_ids = term_course_ids[i]
     course_details = []
     for course_id in course_ids:
-        course_detail = get_details(term, course_id)
+        sleep(0.1)
+        try:
+            course_detail = get_details(term, course_id)
+        except:
+            continue
         if course_detail["subject"] + course_detail["catnum"] in prereq_code_to_id \
                 or course_id in id_to_prereq_codes:
             continue

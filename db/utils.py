@@ -31,6 +31,8 @@ def get_details(term, course_id):
         "https://api.princeton.edu:443/student-app/1.0.1/courses/details",
         params={"fmt": "json", "term": term, "course_id": course_id},
         headers={"Authorization": "Bearer " + refresh_token()})
+    if req.status_code != 200:
+        print(req.text)
     response = json.loads(req.text)
     details = response["course_details"]["course_detail"]
     details["_id"] = details["course_id"]
@@ -42,6 +44,8 @@ def get_current_term():
         "https://api.princeton.edu:443/student-app/1.0.1/courses/terms",
         params={"fmt": "json"},
         headers={"Authorization": "Bearer " + refresh_token()})
+    if req.status_code != 200:
+        print(req.text)
     response = json.loads(req.text)
     return response["term"][0]["code"]
 
@@ -51,6 +55,8 @@ def get_course_ids(term):
         "https://api.princeton.edu:443/student-app/1.0.1/courses/courses",
         params={"fmt": "json", "term": term, "subject": "list"},
         headers={"Authorization": "Bearer " + refresh_token()})
+    if req.status_code != 200:
+        print(req.text)
     response = json.loads(req.text)
     departments = list(map(lambda x: x["code"], response["term"][0]["subjects"]))
     
@@ -58,6 +64,8 @@ def get_course_ids(term):
         "https://api.princeton.edu:443/student-app/1.0.1/courses/courses",
         params={"fmt": "json", "term": term, "subject": ','.join(departments)},
         headers={"Authorization": "Bearer " + refresh_token()})
+    if req.status_code != 200:
+        print(req.text)
     response = json.loads(req.text)
 
     course_ids = []
