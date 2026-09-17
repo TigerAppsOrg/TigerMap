@@ -50,11 +50,12 @@ jobs:
         run: bun run build --filter=@tigermap/web
 
       - name: Deploy to Cloudflare Pages
+        working-directory: apps/web
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
         run: >-
-          bunx wrangler@4.78.0 pages deploy apps/web/dist
+          bunx wrangler@4.78.0 pages deploy dist
           --project-name=tigermap
           --branch=main
           --commit-hash=${{ github.sha }}
