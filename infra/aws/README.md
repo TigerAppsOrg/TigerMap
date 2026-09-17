@@ -7,6 +7,7 @@ Fastify API and its local SQLite data.
 
 - API instance: `i-0e1651e5f2954427d` (`tigermap-api`)
 - API Elastic IP: `3.91.107.148`
+- API security group: `sg-052b6b922dce1a08e` (`tigermap-api-sg`)
 - Instance role/profile: `TigerMapInstanceRole`
 - GitHub OIDC deploy role: `TigerMapGitHubDeployRole`
 - Encrypted runtime parameters: `/tigermap/production/*`
@@ -18,6 +19,9 @@ read that command's result. No long-lived AWS key is stored in GitHub.
 The EC2 environment file remains the runtime source for the current service.
 Its values are also backed up as encrypted SSM parameters for recovery. Never
 commit decrypted parameter values.
+
+The API security group exposes HTTP on port 80 for the Pages Function proxy.
+Administrative access uses SSM, so the instance has no public SSH ingress.
 
 ## GitHub configuration
 
