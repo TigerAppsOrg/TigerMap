@@ -30,6 +30,17 @@ const CAMPUS_CENTER: [number, number] = [-74.6554, 40.3473];
 const motionDuration = (duration: number) =>
   window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : duration;
 
+// keeps the camera target clear of the panels laid out in index.css
+function cameraPadding(routing: boolean) {
+  const { innerWidth: width, innerHeight: height } = window;
+  if (width >= 700) return { top: routing ? 240 : 180, bottom: 100, left: 80, right: 460 };
+  // short screens put the panel on the right and the search tools top left
+  if (height <= 550) return { top: 196, bottom: 64, left: 24, right: width * 0.46 + 24 };
+  return routing
+    ? { top: 190, bottom: 334, left: 40, right: 70 }
+    : { top: 210, bottom: Math.min(height * 0.65, height - 220) + 16, left: 36, right: 36 };
+}
+
 function presentMarker(marker: MapboxMarker | null) {
   const element = marker?.getElement();
   if (!element) return;
@@ -169,18 +180,10 @@ export function CampusMap({
       });
       return;
     }
-    const mobile = window.innerWidth < 700;
     mapRef.current?.flyTo({
       center: [focus.lng, focus.lat],
       zoom: 17,
-      padding: mobile
-        ? {
-            top: 210,
-            bottom: Math.min(window.innerHeight * 0.65, window.innerHeight - 220) + 16,
-            left: 36,
-            right: 36,
-          }
-        : { top: 180, bottom: 100, left: 80, right: 460 },
+      padding: cameraPadding(false),
       duration: motionDuration(650),
     });
   }, [focus, loaded, routeDest]);
@@ -188,7 +191,6 @@ export function CampusMap({
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !routeDest || !loaded) return;
-    const mobile = window.innerWidth < 700;
     if (route) {
       const coords = [...route.geometry.coordinates, [routeDest.lng, routeDest.lat]];
       if (routeOrigin) coords.push([routeOrigin.lng, routeOrigin.lat]);
@@ -200,9 +202,7 @@ export function CampusMap({
           [Math.max(...lngs), Math.max(...lats)],
         ],
         {
-          padding: mobile
-            ? { top: 190, bottom: 310, left: 40, right: 70 }
-            : { top: 240, bottom: 100, left: 80, right: 460 },
+          padding: cameraPadding(true),
           duration: motionDuration(700),
           maxZoom: 17.5,
         },
