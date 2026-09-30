@@ -390,6 +390,7 @@ export function CampusMap({
               onSelect={() => onSelect({ kind: "freefood", data: post })}
             >
               <Pizza size={17} />
+              <span className="marker-activity" />
             </PlaceMarker>
           ))}
           {eatingClubs.map((club) => (
