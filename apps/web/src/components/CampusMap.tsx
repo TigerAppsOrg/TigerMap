@@ -53,6 +53,7 @@ function PlaceMarker({
   at,
   label,
   tooltip,
+  anchor = "center",
   className = "",
   color,
   selected,
@@ -62,6 +63,7 @@ function PlaceMarker({
   at: LatLng;
   label: string;
   tooltip: string;
+  anchor?: "center" | "bottom";
   className?: string;
   color?: string;
   selected: boolean;
@@ -69,7 +71,7 @@ function PlaceMarker({
   children: ReactNode;
 }) {
   return (
-    <Marker ref={presentMarker} longitude={at.lng} latitude={at.lat} anchor="center">
+    <Marker ref={presentMarker} longitude={at.lng} latitude={at.lat} anchor={anchor}>
       <button
         type="button"
         className={`map-marker ${className}`}
@@ -379,6 +381,8 @@ export function CampusMap({
             <PlaceMarker
               key={`food-${post.id}`}
               at={post}
+              // sits above the spot so posts at dining halls and places stay tappable
+              anchor="bottom"
               className="food-marker"
               label={`Free food: ${post.subject}`}
               tooltip={`Free food · ${post.location_name}`}

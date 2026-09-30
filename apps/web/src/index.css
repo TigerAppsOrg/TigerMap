@@ -208,6 +208,7 @@ kbd { display: inline-flex; gap: 4px; padding: 5px 7px; margin-right: 8px; color
 .marker-activity { position: absolute; top: -2px; right: -1px; width: 7px; height: 7px; border: 1.5px solid var(--surface); background: var(--accent); border-radius: 50%; }
 .marker-tooltip { position: absolute; bottom: 100%; left: 50%; transform: translate(-50%, 4px); opacity: 0; pointer-events: none; padding: 7px 10px; background: var(--ink); color: var(--surface); border-radius: 7px; font: 600 10px "Manrope", sans-serif; white-space: nowrap; transition: transform 180ms var(--ease), opacity 180ms var(--ease); }
 .map-marker:hover .marker-tooltip, .map-marker:focus-visible .marker-tooltip { opacity: 1; transform: translate(-50%, 0); }
+.mapboxgl-marker:has(.food-marker) { z-index: 1; }
 .mapboxgl-marker:has(.map-marker:hover), .mapboxgl-marker:has(.map-marker[aria-pressed="true"]) { z-index: 2; }
 .route-origin-dot { width: 16px; height: 16px; background: #4e6679; border: 3px solid var(--surface); border-radius: 50%; box-shadow: 0 0 0 5px #4e667925; }
 .route-destination { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: var(--accent); color: var(--surface); border: 3px solid var(--surface); box-shadow: var(--shadow); }

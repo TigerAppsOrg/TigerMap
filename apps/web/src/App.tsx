@@ -24,6 +24,7 @@ export function App() {
   const [pois, setPois] = useState<POI[]>([]);
   const [placesError, setPlacesError] = useState(false);
   const [feedError, setFeedError] = useState(false);
+  const [foodFeedError, setFoodFeedError] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategories, setActiveCategories] = useState<Set<string>>(
     new Set(["@dining", "@freefood", "@clubs"]),
@@ -186,8 +187,11 @@ export function App() {
   useEffect(() => {
     const load = () =>
       getJSON<{ emails?: FreefoodPost[] }>("/api/freefood/feed?hours=9")
-        .then((data) => setFreefoodPosts(data.emails ?? []))
-        .catch(() => setFeedError(true));
+        .then((data) => {
+          setFreefoodPosts(data.emails ?? []);
+          setFoodFeedError(false);
+        })
+        .catch(() => setFoodFeedError(true));
     load();
     const id = setInterval(load, 2 * 60 * 1000);
     return () => clearInterval(id);
@@ -365,7 +369,9 @@ export function App() {
                 </button>
               </div>
             )}
-            {feedError && <div className="discovery-footer">Some live updates are unavailable</div>}
+            {(feedError || foodFeedError) && (
+              <div className="discovery-footer">Some live updates are unavailable</div>
+            )}
           </details>
         )}
       </div>
