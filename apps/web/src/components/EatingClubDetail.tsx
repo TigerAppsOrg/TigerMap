@@ -1,18 +1,19 @@
-import { ChevronLeft, ExternalLink, X } from "lucide-react";
+import { ArrowUpRight, ExternalLink, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { EatingClub } from "../types";
+import { getJSON, parseList } from "../utils/api";
+import { DetailPanel } from "./DetailPanel";
 
 interface EatingClubDetailProps {
   club: EatingClub;
   onClose: () => void;
+  onDirections: () => void;
 }
 
 interface FullEvent {
   id: number;
-  message_id: string;
   subject: string;
   author_name: string;
-  author_email: string;
   date: string;
   body_text: string;
   images: string;
@@ -25,151 +26,119 @@ function formatDate(dateStr: string): string {
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
-function parseImages(event: FullEvent): string[] {
-  try {
-    return JSON.parse(event.images || "[]");
-  } catch {
-    return [];
-  }
-}
-
 /** LISTSERV-hosted attachments need the API's login; other hosts load directly. */
 function imageSrc(event: FullEvent, url: string, index: number): string {
   return url.includes("lists.princeton.edu") ? `/api/eating-clubs/image/${event.id}/${index}` : url;
 }
 
-export function EatingClubDetail({ club, onClose }: EatingClubDetailProps) {
+export function EatingClubDetail({ club, onClose, onDirections }: EatingClubDetailProps) {
   const [events, setEvents] = useState<FullEvent[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<FullEvent | null>(null);
-
+  const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [retry, setRetry] = useState(0);
   useEffect(() => {
-    fetch(`/api/eating-clubs/${encodeURIComponent(club.name)}/events?limit=20`)
-      .then((r) => r.json())
-      .then((data) => setEvents(data.events ?? []))
-      .catch(() => {});
-  }, [club.name]);
+    const controller = new AbortController();
+    setStatus("loading");
+    getJSON<{ events?: FullEvent[] }>(
+      `/api/eating-clubs/${encodeURIComponent(club.name)}/events?limit=20`,
+      { signal: controller.signal, cache: retry ? "reload" : "default" },
+    )
+      .then((data) => {
+        setEvents(data.events ?? []);
+        setStatus("ready");
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) setStatus("error");
+      });
+    return () => controller.abort();
+  }, [club.name, retry]);
 
   return (
-    <div className="detail-panel">
-      {/* Header */}
-      <div className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-amber-700 to-amber-600 text-white shrink-0">
+    <DetailPanel
+      title={selectedEvent ? selectedEvent.subject : club.name}
+      category={selectedEvent ? club.name : "Eating club"}
+      icon={Users}
+      onClose={onClose}
+      onDirections={onDirections}
+      onBack={selectedEvent ? () => setSelectedEvent(null) : undefined}
+    >
+      {/* biome-ignore lint/a11y/noNoninteractiveTabindex: keyboard access to scrollable content */}
+      <div tabIndex={0} className="detail-content" key={selectedEvent?.id ?? status}>
         {selectedEvent ? (
-          <button
-            type="button"
-            onClick={() => setSelectedEvent(null)}
-            className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors"
-          >
-            <ChevronLeft size={14} />
-          </button>
-        ) : (
-          <img
-            src={`/api/images/eating-clubs/sprites/${club.sprite}@2x.png`}
-            alt=""
-            className="w-6 h-6 rounded-full bg-white object-contain"
-          />
-        )}
-        <span className="text-sm font-bold tracking-wide flex-1">
-          {selectedEvent ? "Event Detail" : club.name}
-        </span>
-        <button
-          type="button"
-          onClick={onClose}
-          className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors"
-        >
-          <X size={12} />
-        </button>
-      </div>
-
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto p-4">
-        {selectedEvent ? (
-          // ── Full event view ──
-          <div>
-            <h2 className="text-base font-bold text-gray-900 leading-snug">
-              {selectedEvent.subject}
-            </h2>
-            <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
-              {selectedEvent.event_type && (
-                <span className="inline-flex items-center bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full font-medium">
-                  {selectedEvent.event_type}
-                </span>
-              )}
-              <span>{formatDate(selectedEvent.date)}</span>
+          <>
+            <div className="event-meta">
+              <span>{selectedEvent.event_type || "Club event"}</span>
+              <time dateTime={selectedEvent.date}>{formatDate(selectedEvent.date)}</time>
             </div>
-
-            {selectedEvent.body_text && (
-              <p className="mt-3 text-sm text-gray-700 leading-relaxed whitespace-pre-line break-words">
-                {selectedEvent.body_text}
-              </p>
-            )}
-
-            {parseImages(selectedEvent).length > 0 && (
-              <div className="mt-3 flex flex-col gap-2">
-                {parseImages(selectedEvent).map((url, i) => (
-                  <img
-                    key={url}
-                    src={imageSrc(selectedEvent, url, i)}
-                    alt=""
-                    className="w-full h-auto rounded-lg"
-                    loading="lazy"
-                  />
-                ))}
-              </div>
-            )}
-
-            <div className="mt-4 pt-3 border-t border-gray-100 space-y-1.5">
-              <p className="text-xs text-gray-500">
-                <span className="font-medium text-gray-600">From:</span> {selectedEvent.author_name}
-              </p>
+            {selectedEvent.body_text && <p className="event-body">{selectedEvent.body_text}</p>}
+            {parseList(selectedEvent.images).map((url, i) => (
+              <img
+                key={url}
+                src={imageSrc(selectedEvent, url, i)}
+                alt={`Event announcement from ${club.name}`}
+                className="event-photo"
+                loading="lazy"
+              />
+            ))}
+            <div className="event-source">
+              <p>From {selectedEvent.author_name}</p>
               {selectedEvent.listserv_url && (
-                <a
-                  href={selectedEvent.listserv_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs text-amber-600 hover:text-amber-800 font-medium"
-                >
-                  <ExternalLink size={10} />
-                  View on LISTSERV
+                <a href={selectedEvent.listserv_url} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink size={14} />
+                  Original post
                 </a>
               )}
             </div>
-          </div>
+          </>
         ) : (
-          // ── Event list view ──
-          <div>
-            <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">
-              Recent Events ({events.length})
-            </h4>
-            {events.length > 0 ? (
-              <div className="space-y-1">
-                {events.map((event) => (
-                  <button
-                    key={event.id}
-                    type="button"
-                    onClick={() => setSelectedEvent(event)}
-                    className="w-full text-left px-3 py-2.5 rounded-lg hover:bg-amber-50 transition-colors group"
-                  >
-                    <p className="text-sm font-medium text-gray-900 line-clamp-2 group-hover:text-amber-800">
-                      {event.subject}
-                    </p>
-                    <div className="flex items-center gap-2 mt-1 text-xs text-gray-400">
-                      <span>{formatDate(event.date)}</span>
-                      {event.event_type && (
-                        <>
-                          <span>·</span>
-                          <span className="text-amber-600">{event.event_type}</span>
-                        </>
-                      )}
-                    </div>
-                  </button>
-                ))}
+          <>
+            <div className="menu-date">
+              <span>Recent events</span>
+              <span>{status === "ready" ? events.length : ""}</span>
+            </div>
+            {status === "loading" && (
+              <div className="places-skeleton" aria-label="Loading events">
+                <span />
+                <span />
+                <span />
               </div>
-            ) : (
-              <p className="text-sm text-gray-400 italic">No recent events found</p>
             )}
-          </div>
+            {status === "error" && (
+              <p className="empty-state">
+                Events couldn’t load.{" "}
+                <button
+                  type="button"
+                  className="text-button"
+                  onClick={() => setRetry((n) => n + 1)}
+                >
+                  Try again
+                </button>
+              </p>
+            )}
+            {status === "ready" && !events.length && (
+              <p className="empty-state">No recent events have been posted.</p>
+            )}
+            {status === "ready" &&
+              events.map((event) => (
+                <button
+                  key={event.id}
+                  type="button"
+                  className="event-row"
+                  onClick={() => setSelectedEvent(event)}
+                >
+                  <span>
+                    <strong>{event.subject}</strong>
+                    <span>
+                      {formatDate(event.date)}
+                      {event.event_type ? ` · ${event.event_type}` : ""}
+                    </span>
+                  </span>
+                  <ArrowUpRight size={17} />
+                </button>
+              ))}
+          </>
         )}
       </div>
-    </div>
+    </DetailPanel>
   );
 }
