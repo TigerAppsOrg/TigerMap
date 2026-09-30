@@ -33,7 +33,7 @@ const motionDuration = (duration: number) =>
 // keeps the camera target clear of the panels laid out in index.css
 function cameraPadding(routing: boolean) {
   const { innerWidth: width, innerHeight: height } = window;
-  if (width >= 700) return { top: routing ? 240 : 180, bottom: 100, left: 80, right: 460 };
+  if (width >= 768) return { top: routing ? 240 : 180, bottom: 100, left: 80, right: 460 };
   // short screens put the panel on the right and the search tools top left
   if (height <= 550) return { top: 196, bottom: 64, left: 24, right: width * 0.46 + 24 };
   return routing

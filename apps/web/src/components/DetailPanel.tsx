@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 
-const isMobile = () => window.matchMedia("(max-width: 699px)").matches;
+const isMobile = () => window.matchMedia("(width < 768px)").matches;
 const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 export function DetailPanel({

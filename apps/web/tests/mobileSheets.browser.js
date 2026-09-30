@@ -2,7 +2,7 @@
 (async () => {
   const panel = document.querySelector(".detail-panel");
   const handle = panel?.querySelector(".sheet-handle-button");
-  if (!panel || !handle || !matchMedia("(max-width: 699px)").matches)
+  if (!panel || !handle || !matchMedia("(width < 768px)").matches)
     throw new Error("Open a sheet at a mobile viewport first");
   const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const frame = () => new Promise((resolve) => requestAnimationFrame(resolve));
