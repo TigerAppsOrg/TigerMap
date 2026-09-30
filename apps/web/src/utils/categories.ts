@@ -1,67 +1,77 @@
-const CATEGORY_COLORS: Record<string, string> = {
-  Building: "#4a7c59",
-  University: "#4a7c59",
-  "Academic Department": "#2563eb",
-  "Administrative Department": "#6366f1",
-  College: "#b91c1c",
-  Dormitory: "#9333ea",
-  Library: "#0891b2",
-  "Dining Hall": "#ea580c",
-  Cafe: "#d97706",
-  Restaurant: "#dc2626",
-  "Food Court": "#ea580c",
-  "Convenience Store": "#65a30d",
-  "Parking Lot": "#3b82f6",
-  "Bus Stop": "#0ea5e9",
-  "Train Station": "#0284c7",
-  "Emergency Phone": "#dc2626",
-  "Public Art": "#ec4899",
-  "Events Venue": "#8b5cf6",
-  Theater: "#a855f7",
-  Gallery: "#d946ef",
-  Museum: "#c026d3",
-  "Sports Center": "#16a34a",
-  "Fitness Center": "#22c55e",
-  "Swimming Pool": "#06b6d4",
-  Park: "#15803d",
-  Entrance: "#64748b",
-  Ramp: "#64748b",
-  Steps: "#94a3b8",
-  Information: "#0ea5e9",
-  Shop: "#8b5cf6",
+import {
+  BookOpen,
+  Building2,
+  Bus,
+  Coffee,
+  Dumbbell,
+  GraduationCap,
+  House,
+  Info,
+  Landmark,
+  type LucideIcon,
+  MapPin,
+  Palette,
+  ParkingCircle,
+  Phone,
+  Pizza,
+  Shield,
+  ShoppingBag,
+  TrainFront,
+  Trees,
+  Users,
+  Utensils,
+  Waves,
+} from "lucide-react";
+
+const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  Building: Building2,
+  University: Landmark,
+  "Academic Department": GraduationCap,
+  "Administrative Department": Building2,
+  College: Shield,
+  Dormitory: House,
+  Library: BookOpen,
+  "Dining Hall": Utensils,
+  Cafe: Coffee,
+  Restaurant: Utensils,
+  "Parking Lot": ParkingCircle,
+  "Bus Stop": Bus,
+  "Train Station": TrainFront,
+  "Emergency Phone": Phone,
+  "Public Art": Palette,
+  Museum: Landmark,
+  "Events Venue": Users,
+  Theater: Users,
+  Athletics: Dumbbell,
+  "Sports Center": Dumbbell,
+  "Fitness Center": Dumbbell,
+  "Swimming Pool": Waves,
+  Park: Trees,
+  Shop: ShoppingBag,
+  Information: Info,
+  "@dining": Utensils,
+  "@freefood": Pizza,
+  "@clubs": Users,
 };
 
-const CATEGORY_ICONS: Record<string, string> = {
-  Building: "🏛",
-  University: "🏛",
-  "Academic Department": "📚",
-  "Administrative Department": "🏢",
-  College: "🛡",
-  Dormitory: "🏠",
-  Library: "📖",
-  "Dining Hall": "🍽",
-  Cafe: "☕",
-  Restaurant: "🍴",
-  "Parking Lot": "P",
-  "Bus Stop": "🚌",
-  "Train Station": "🚂",
-  "Emergency Phone": "📞",
-  "Public Art": "🎨",
-  "Events Venue": "🎭",
-  Theater: "🎭",
-  Gallery: "🖼",
-  Museum: "🏛",
-  "Sports Center": "⚽",
-  "Fitness Center": "💪",
-  Park: "🌳",
-  Entrance: "🚪",
-  Information: "ℹ",
-};
+export const QUICK_CATEGORIES = [
+  { name: "@dining", label: "Dining" },
+  { name: "@freefood", label: "Free food" },
+  { name: "@clubs", label: "Clubs" },
+];
 
-export function getCategoryColor(category: string | null | undefined): string {
-  return CATEGORY_COLORS[category ?? ""] ?? "#64748b";
+export function getCategoryLabel(category: string): string {
+  return QUICK_CATEGORIES.find((c) => c.name === category)?.label ?? category;
 }
 
-export function getCategoryIcon(category: string | null | undefined): string {
-  return CATEGORY_ICONS[category ?? ""] ?? "•";
+export function getCategoryColor(category: string | null | undefined): string {
+  if (["@dining", "Dining Hall", "Cafe"].includes(category ?? "")) return "#47644b";
+  if (["@freefood", "Restaurant"].includes(category ?? "")) return "#ad4d20";
+  if (["@clubs", "College", "Dormitory"].includes(category ?? "")) return "#796249";
+  if (category === "Library") return "#4e6679";
+  return "#62695b";
+}
+
+export function getCategoryIcon(category: string | null | undefined): LucideIcon {
+  return CATEGORY_ICONS[category ?? ""] ?? MapPin;
 }

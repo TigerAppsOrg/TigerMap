@@ -1,69 +1,73 @@
-import { X } from "lucide-react";
-import { getCategoryColor } from "../utils/categories";
+import { Check, X } from "lucide-react";
+import { getCategoryIcon, getCategoryLabel } from "../utils/categories";
 
 interface CategorySidebarProps {
   categories: { name: string; count: number }[];
   activeCategories: Set<string>;
   onToggle: (name: string) => void;
+  onClear: () => void;
+  onSelectAll: () => void;
   onClose: () => void;
 }
-
-const HIDDEN = new Set(["Steps", "steps", "Entrance", "Ramp"]);
 
 export function CategorySidebar({
   categories,
   activeCategories,
   onToggle,
+  onClear,
+  onSelectAll,
   onClose,
 }: CategorySidebarProps) {
-  const display = categories.filter((c) => !HIDDEN.has(c.name));
-
+  const allSelected = categories.every((category) => activeCategories.has(category.name));
   return (
-    <div className="absolute top-12 left-4 z-20 w-[300px] max-h-[calc(100vh-80px)] bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden flex flex-col">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-        <h2 className="text-sm font-bold text-gray-900">Categories</h2>
-        <button
-          type="button"
-          onClick={onClose}
-          className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
-        >
-          <X size={16} />
+    <section className="category-panel" aria-label="Map filters">
+      <div className="section-heading">
+        <h2>Map filters</h2>
+        <button type="button" className="icon-button" aria-label="Close filters" onClick={onClose}>
+          <X size={19} />
         </button>
       </div>
-      <div className="flex-1 overflow-y-auto p-2">
-        {display.map(({ name, count }) => {
-          const isActive = activeCategories.has(name);
-          const color = getCategoryColor(name);
+      <div className="category-list">
+        {categories.map(({ name, count }) => {
+          const active = activeCategories.has(name);
+          const Icon = getCategoryIcon(name);
           return (
             <button
               key={name}
               type="button"
+              className={`category-row ${active ? "is-active" : ""}`}
+              aria-pressed={active}
               onClick={() => onToggle(name)}
-              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-left transition-colors ${isActive ? "bg-gray-100" : "hover:bg-gray-50"}`}
             >
-              <div
-                className="w-3 h-3 rounded-full shrink-0"
-                style={{ backgroundColor: isActive ? color : "#d1d5db" }}
-              />
-              <span className="text-xs font-medium text-gray-700 flex-1">{name}</span>
-              <span className="text-[10px] text-gray-400 font-mono">{count}</span>
+              <Icon size={18} />
+              <span>{getCategoryLabel(name)}</span>
+              <span className="category-count">{count}</span>
+              <span className="category-check">{active && <Check size={13} />}</span>
             </button>
           );
         })}
       </div>
-      {activeCategories.size > 0 && (
-        <div className="px-4 py-2 border-t border-gray-100">
+      <div className="category-footer">
+        <span>{activeCategories.size} selected</span>
+        <div className="category-actions">
           <button
             type="button"
-            onClick={() => {
-              for (const n of activeCategories) onToggle(n);
-            }}
-            className="text-xs text-blue-600 hover:text-blue-800 font-medium"
+            className="text-button"
+            disabled={allSelected}
+            onClick={onSelectAll}
           >
-            Clear all filters
+            Select all
+          </button>
+          <button
+            type="button"
+            className="text-button"
+            disabled={!activeCategories.size}
+            onClick={onClear}
+          >
+            Clear all
           </button>
         </div>
-      )}
-    </div>
+      </div>
+    </section>
   );
 }

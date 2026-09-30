@@ -74,3 +74,10 @@ export interface FreefoodPost {
   lat: number;
   lng: number;
 }
+
+export type Selection =
+  | { kind: "poi"; data: POI }
+  | { kind: "freefood"; data: FreefoodPost }
+  | { kind: "club"; data: EatingClub }
+  | { kind: "dining"; data: DiningHallMenu }
+  | null;
