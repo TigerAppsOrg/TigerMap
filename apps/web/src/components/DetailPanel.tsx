@@ -183,7 +183,7 @@ export function DetailPanel({
           )}
           <div className="detail-heading">
             <span className="eyebrow">{category}</span>
-            <h2>{title}</h2>
+            <h2 title={title}>{title}</h2>
           </div>
           <button type="button" className="icon-button" onClick={close} aria-label="Close details">
             <X size={20} />

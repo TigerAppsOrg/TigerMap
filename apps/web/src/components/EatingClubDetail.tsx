@@ -55,8 +55,8 @@ export function EatingClubDetail({ club, onClose, onDirections }: EatingClubDeta
 
   return (
     <DetailPanel
-      title={selectedEvent ? selectedEvent.subject : club.name}
-      category={selectedEvent ? club.name : "Eating club"}
+      title={club.name}
+      category="Eating club"
       icon={Users}
       onClose={onClose}
       onDirections={onDirections}
@@ -66,6 +66,7 @@ export function EatingClubDetail({ club, onClose, onDirections }: EatingClubDeta
       <div tabIndex={0} className="detail-content" key={selectedEvent?.id ?? status}>
         {selectedEvent ? (
           <>
+            <h3 className="event-title">{selectedEvent.subject}</h3>
             <div className="event-meta">
               <span>{selectedEvent.event_type || "Club event"}</span>
               <time dateTime={selectedEvent.date}>{formatDate(selectedEvent.date)}</time>

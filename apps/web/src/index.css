@@ -32,7 +32,7 @@ button:active:not(:disabled) { transform: scale(0.97); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .detail-panel:focus { outline: none; }
 h1, h2, h3, p { margin: 0; }
-h1, h2, .brand-name { font-family: "Bricolage Grotesque", sans-serif; }
+h1, h2, .brand-name, .event-title { font-family: "Bricolage Grotesque", sans-serif; }
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 svg { flex-shrink: 0; }
@@ -133,7 +133,7 @@ kbd { display: inline-flex; gap: 4px; padding: 5px 7px; margin-right: 8px; color
 .detail-header > .icon-button { margin-top: -7px; margin-right: -4px; }
 .detail-category-icon { color: var(--accent); padding-top: 6px; }
 .detail-heading { flex: 1; min-width: 0; }
-.detail-heading h2 { font-size: 23px; font-weight: 600; line-height: 1.2; letter-spacing: -0.5px; margin-top: 5px; overflow-wrap: anywhere; }
+.detail-heading h2 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; font-size: 23px; font-weight: 600; line-height: 1.2; letter-spacing: -0.5px; margin-top: 5px; overflow-wrap: anywhere; }
 .detail-content { overflow-y: auto; min-height: 0; flex: 1; padding: 0 24px 24px; overscroll-behavior: contain; animation: arrive 250ms var(--ease); }
 .detail-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
 .detail-description, .event-body { font-size: 13px; line-height: 1.8; color: var(--muted); overflow-wrap: anywhere; }
@@ -155,6 +155,7 @@ kbd { display: inline-flex; gap: 4px; padding: 5px 7px; margin-right: 8px; color
 .menu-station h3 { color: var(--green); font-size: 12px; font-weight: 700; margin-bottom: 10px; }
 .menu-station ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
 .menu-station li { font-size: 13px; line-height: 1.5; color: var(--muted); }
+.event-title { margin-bottom: 12px; font-size: 19px; font-weight: 600; line-height: 1.25; letter-spacing: -0.3px; overflow-wrap: anywhere; }
 .event-meta { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 8px 16px; color: var(--muted); font-size: 11px; margin-bottom: 20px; }
 .event-meta > span { display: inline-flex; align-items: center; gap: 6px; color: var(--accent); }
 .event-body { white-space: pre-line; }
@@ -312,6 +313,7 @@ kbd { display: inline-flex; gap: 4px; padding: 5px 7px; margin-right: 8px; color
   .mapboxgl-ctrl-attrib { bottom: 0; }
 }
 @media (max-width: 699px) and (max-height: 550px) {
+  .detail-heading h2 { font-size: 21px; -webkit-line-clamp: 2; line-clamp: 2; }
   .app-brand { padding: 4px 8px; }
   .brand-name { font-size: 20px; }
   .brand-subtitle { display: none; }
