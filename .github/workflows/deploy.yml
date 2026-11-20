@@ -1,6 +1,7 @@
 name: CI and deploy
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
   pull_request:
@@ -30,7 +31,7 @@ jobs:
 
   deploy-frontend:
     name: Frontend → Cloudflare Pages
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     needs: validate
     runs-on: ubuntu-latest
     steps:
@@ -62,7 +63,7 @@ jobs:
 
   deploy-backend:
     name: Backend → EC2
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     needs: validate
     runs-on: ubuntu-latest
     permissions:
